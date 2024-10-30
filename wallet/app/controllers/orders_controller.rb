@@ -2,16 +2,10 @@ class OrdersController < ApplicationController
   before_action :set_stock, only: %i[new create edit update destroy]
   before_action :set_order, only: %i[edit update destroy]
 
-  def new
-    @order = current_user.orders.build
-    # @disabled = if current_user.user_stocks.find_by(stock: @stock).nil?
-    #               ['sell']
-    #             else
-    #               []
-    #             end
+  def index
+    @orders = Order.all
+    render json: {status: {code: 200, message: "Success"}, data: @rrders}
   end
-
-  def edit; end
 
   def create
     @order = current_user.orders.build(order_params)
@@ -35,7 +29,7 @@ class OrdersController < ApplicationController
     end
   end
 
-  def destroy 
+  def destroy
     if @order.destroy
       render json: {status: {code: 200, message: "Order deleted successfully"}, data: @order}
     end
@@ -52,8 +46,6 @@ class OrdersController < ApplicationController
   end
 
   def order_params
-    params.require(:order).permit(:transaction_type,
-                                  :price,
-                                  :quantity)
+    params.require(:order).permit(:transaction_type, :price, :quantity, :stock_id)
   end
 end
