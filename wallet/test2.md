@@ -2,11 +2,10 @@ token=""
 
 curl --location 'http://localhost:3000/signup' --header 'Content-Type: application/json' --data-raw '{ "user": { "email": "team1@test.me","password": "password" }}'
 
-curl --location 'http://localhost:3000/orders' --header 'Content-Type: application/json' --data-raw '{ "transaction_type": 'sell', user_id: 6, stock_id: 60, price: 119.88, quantity: 10 }' --header "Authorization: Bearer $token"
-
-curl -X POST http://localhost:3000/orders/create -H "Authorization: Bearer $token" -d "user[transaction_type]=sell" -d "user[user_id]=6" -d "user[stock_id]=60" -d "user[price]=119.88" -d "user[quantity]=10"
+curl -d '{ "transaction_type":"sell","stock_id":"60","price":"119.88","quantity":"10" }' -H "Content-Type: application/json" --header  "Authorization: Bearer $token" 'Content-Type: application/json' -X POST http://localhost:3000/orders
 
 
+///buyer@example.com, team1@test.me
 curl -i --location 'http://localhost:3000/login' --header 'Content-Type: application/json' --data-raw '{"user":{"email":"team1@test.me","password": "password"}}'
 
 
