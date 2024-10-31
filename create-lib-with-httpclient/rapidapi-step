@@ -1,0 +1,94 @@
+////url : 
+https://rapidapi.com/blog/news-api-ruby-on-rails/
+https://rapidapi.com/RapidDevRel/api/yc-hacker-news-official/playground/apiendpoint_4733b9fc-61a4-4b70-bc00-9908659fc39c
+
+
+rails new hackernews --skip-action-mailer --skip-action-mailbox --skip-action-text --skip-active-record --skip-active-storage
+
+nano Gemfile
+<<<
+gem 'excon'
+>>> add
+
+mkdir lib/hackernews
+nano lib/hackernews/client.rb  ///addfile
+<<<
+module Hackernews
+  class Client
+    def initialize
+      @host = 'yc-hacker-news-official.p.rapidapi.com'
+      @key = '0b8bc9030dmsh879c0ddf03346bcp103f5ajsn345974903803'
+    end
+
+    def item(id)
+      get("item/#{id}")
+    end
+
+    def topstories_all
+      get('topstories')
+    end
+    
+    def topstories(start = 0, per_page = 10, expand = true)
+      stories = get('topstories')[start...start + per_page] ## array [currentpage to (currentpage+per_page)]
+
+      if expand
+        stories.map! do |story|
+        item(story)
+        end
+      end
+
+      stories
+    end
+    
+
+    private
+
+    def get(path)
+      response = Excon.get(
+        'https://' + @host + '/' + path + '.json?print=pretty',
+        headers: {
+          'x-rapidapi-host' => @host,
+          'x-rapidapi-key' => @key,
+        }
+      )
+
+      return false if response.status != 200
+
+      JSON.parse(response.body)
+    end
+  end
+end
+>>>//add 
+
+nano app/controllers/application_controller.rb
+<<<
+class ApplicationController < ActionController::Base
+  def client
+    @client ||= Hackernews::Client.new
+  end
+end
+>>> //add
+
+nano app/controllers/stories_controller.rb  //addfile
+<<<
+class StoriesController < ApplicationController
+  def top
+    @stories = client.topstories(0, 10)
+    render json: {status: {code: 200, message: "Success"}, data: @stories}
+  end
+end
+>>> add
+
+
+nano config/routes.rb
+<<<
+Rails.application.routes.draw do
+  get 'top', to: 'stories#top'
+end 
+>>> //add
+
+rails s
+
+
+///test
+http://localhost:3000/top
