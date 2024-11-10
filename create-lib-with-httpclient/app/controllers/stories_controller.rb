@@ -5,8 +5,8 @@ class StoriesController < ApplicationController
   end
 
   def tops
-    @start = (params[:start] || 0).to_i
-    @per_page = (params[:per_page] || 10).to_i
+    @start = (params[:pageno] || 0).to_i
+    @per_page = (params[:perpage] || 10).to_i
     @per_page = [@per_page, 20].min # max 20 per page
   
     @stories = client.topstories(@start, @per_page)

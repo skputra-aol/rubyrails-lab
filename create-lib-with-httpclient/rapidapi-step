@@ -91,4 +91,10 @@ rails s
 
 
 ///test
-http://localhost:3000/top
+curl http://localhost:3000/top/41953063
+
+curl -d '{ "pageno":"1","per_page":"10"}' -H "Content-Type: application/json" http://localhost:3000/top
+
+curl -G -d "pageno=1" -d "per_page=10" http://localhost:3000/tops 
+
+curl http://localhost:3000/topall

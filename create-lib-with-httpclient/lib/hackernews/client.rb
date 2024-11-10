@@ -5,7 +5,7 @@ module Hackernews
       @key = '0b8bc9030dmsh879c0ddf03346bcp103f5ajsn345974903803'
     end
 
-    ## detail info ["title,""time","score"] dari "id" topstories() 
+    ## detail info ["title,""time","score"] dari "id" topstories()
     def item_stories(id)
       get("item/#{id}")
     end
@@ -15,16 +15,20 @@ module Hackernews
     end
 
     def topstoriesall()
-      get('topstories')
+      stories = get('topstories')
+      #stories.map! do |story|
+      #    item_stories(story)
+      #end
     end
 
     ## only return 1  array yaitu ["id"]
-    def topstories(start = 0, per_page = 10, expand = true)
-      stories = get('topstories')[start...start + per_page] ## array [currentpage to (currentpage+per_page)]
-      if expand
-        stories.map! do |story|
+    def topstories(start = 0, per_page = 10)
+
+      stories = get('topstories')[start...start + per_page]
+       ## array [currentpage to (currentpage+per_page)]
+
+      stories.map! do |story|
           item_stories(story)
-        end
       end
       stories
     end
